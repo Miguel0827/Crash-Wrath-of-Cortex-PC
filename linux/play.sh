@@ -47,7 +47,7 @@ if [ -n "$vsync" ]; then set_ini vsync "$vsync"; elif ! grep -qE '^[[:space:]]*v
 # the patches of every run: wide screen, no interlacing, and the effect fixes for high resolutions (when the disc has them)
 {
   for f in ws noint fx; do
-    [ -s "$game/patchsets/$f.txt" ] && cat "$game/patchsets/$f.txt" && echo
+    if [ -s "$game/patchsets/$f.txt" ]; then cat "$game/patchsets/$f.txt"; echo; fi   # (the European disc has no effect fixes)
   done
 } | sed '/^$/d' > "$game/patches_run.txt"
 
