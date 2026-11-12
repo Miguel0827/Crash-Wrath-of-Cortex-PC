@@ -932,10 +932,10 @@ index 0ffb15f..17c3f1a 100644
          if (texel_rect(setup, v, count, prim, fst, rect)) {
              const Range used = region(setup[12], setup[13], setup[14], rect[0], rect[1], rect[2], rect[3]);
 diff --git a/runtime/src/gs/gpu/gs.wgsl b/runtime/src/gs/gpu/gs.wgsl
-index 6c44118..3001b66 100644
+index 6c44118..63a4ba3 100644
 --- a/runtime/src/gs/gpu/gs.wgsl
 +++ b/runtime/src/gs/gpu/gs.wgsl
-@@ -958,6 +958,105 @@ struct Attr {
+@@ -958,6 +958,108 @@ struct Attr {
      z: u32,
  }
  
@@ -976,9 +976,12 @@ index 6c44118..3001b66 100644
 +    var sxy = vec4<f32>(0.0);
 +    var lo = vec4<f32>(255.0);
 +    var hi = vec4<f32>(0.0);
-+    // along the row every other texel (the steps are along the rows), above and below only three
++    // along the row every other texel (the steps are along the rows), above and below only three. At 4x (16 samples per console
++    // pixel, each doing this) every fourth texel along the row too: the same reach with 11 texels instead of 15, which keeps the
++    // castle levels at full speed (the fit hardly changes; the fog's steps are several texels wide).
++    let row_step = select(2, 4, SCALE >= 4u);
 +    for (var dy = -2; dy <= 2; dy = dy + 2) {
-+        let step = select(4, 2, dy == 0);
++        let step = select(4, row_step, dy == 0);
 +        let reach = select(4, 8, dy == 0);
 +        for (var dx = -reach; dx <= reach; dx = dx + step) {
 +            let nx = x + dx;
@@ -1041,7 +1044,7 @@ index 6c44118..3001b66 100644
  fn plot(s: Setup, x: i32, y: i32, k: u32, at: Attr) {
      if (x < s.scax0 || x > s.scax1 || y < s.scay0 || y > s.scay1) {
          return;
-@@ -1051,7 +1150,10 @@ fn plot(s: Setup, x: i32, y: i32, k: u32, at: Attr) {
+@@ -1051,7 +1153,10 @@ fn plot(s: Setup, x: i32, y: i32, k: u32, at: Attr) {
                      lv = nv * f32(1u << l.th);
                  }
              }
