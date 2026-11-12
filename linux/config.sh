@@ -30,7 +30,7 @@ while true; do
     games=($(installed_games)); [ ${#games[@]} -gt 0 ] || exit 0
   fi
   version="$(conf_get version)"; [ -n "$version" ] || version="${games[0]}"
-  scale="$(conf_get scale)"; [ -n "$scale" ] || scale=4
+  scale="$(conf_get scale)"; [ -n "$scale" ] || scale=2
   look="$(conf_get look)"; [ -n "$look" ] || look=sharp_edges
   vsync="$(conf_get vsync)"; [ -n "$vsync" ] || vsync=on
   full="$(conf_get full)"; [ -n "$full" ] || full=1
@@ -52,7 +52,7 @@ while true; do
   fields+=(--add-combo="$(t 'Vertical sync' 'Sincronización vertical')" --combo-values="$(first_then "$(yes_no "$vsync")" "$(t Yes Sí)" No)")
   fields+=(--add-combo="$(t 'Full screen' 'Pantalla completa')" --combo-values="$(first_then "$(yes_no "$full")" "$(t Yes Sí)" No)")
 
-  out="$(z --forms --width=520 --separator='|' --text="CRASH BANDICOOT  ·  THE WRATH OF CORTEX  ·  PC  ·  By NyxBorn  ·  v1.0.2" \
+  out="$(z --forms --width=520 --separator='|' --text="CRASH BANDICOOT  ·  THE WRATH OF CORTEX  ·  PC  ·  By NyxBorn  ·  v1.1.0" \
          --ok-label="$(t 'PLAY' 'JUGAR')" --cancel-label="$(t 'Quit' 'Salir')" --extra-button="$import_label" "${fields[@]}")"
   rc=$?
   if [ "$out" = "$import_label" ]; then bash "$here/install.sh"; continue; fi

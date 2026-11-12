@@ -40,7 +40,7 @@ wide="$(sed -nE 's/.*"widescreen": *(true|false).*/\1/p' "$game/region.json")"
 ini="$game/keys.ini"
 touch "$ini"
 set_ini() { if grep -qE "^[[:space:]]*$1[[:space:]]*=" "$ini"; then sed -i -E "s/^[[:space:]]*$1[[:space:]]*=.*/$1 = $2/" "$ini"; else echo "$1 = $2" >> "$ini"; fi; }
-if [ -n "$scale" ]; then set_ini scale "$scale"; elif ! grep -qE '^[[:space:]]*scale[[:space:]]*=' "$ini"; then set_ini scale 4; fi
+if [ -n "$scale" ]; then set_ini scale "$scale"; elif ! grep -qE '^[[:space:]]*scale[[:space:]]*=' "$ini"; then set_ini scale 2; fi
 [ -z "$look" ] || set_ini look "$look"
 if [ -n "$vsync" ]; then set_ini vsync "$vsync"; elif ! grep -qE '^[[:space:]]*vsync[[:space:]]*=' "$ini"; then set_ini vsync on; fi
 
@@ -65,4 +65,38 @@ cd "$root"
 # the window: the game's emblem as icon, and the name the menu entry (twoc-pc.desktop, StartupWMClass) is matched by in the taskbar
 export PS2_WINDOW_ICON="$pkg/tools/starter/icon.bmp" SDL_VIDEO_X11_WMCLASS=twoc-pc SDL_VIDEO_WAYLAND_WMCLASS=twoc-pc
 # no PS2_DMA_TIME here: with the console's GIF timing this game's loop needs two frames instead of one and plays in slow motion
-PS2_LANGUAGE="$lang" PS2_MENU_LANG="$menu" PS2_GPU_BACKEND=vulkan exec "$exe" "${args[@]}"
+started_log="$({ ls -t "$game"/logs/ps2run_*.log 2> /dev/null || true; } | head -n1)"
+set +e
+PS2_LANGUAGE="$lang" PS2_MENU_LANG="$menu" PS2_GPU_BACKEND=vulkan "$exe" "${args[@]}"
+code=$?
+set -e
+# The game closed with an error: a crash (exit code not 0), or a log that ends in anything but a window closed or Quit from the
+# F1 menu. A report goes next to the programs, and a window says so (the console gets it too).
+log="$({ ls -t "$game"/logs/ps2run_*.log 2> /dev/null || true; } | head -n1)"
+[ "$log" != "$started_log" ] || log=""
+reason=""; [ -z "$log" ] || reason="$(grep -E '^\[ee\] stopped after' "$log" | tail -n1 | sed -E 's/^[^:]*:[^:]*: //')"
+if [ "$code" != 0 ] || { [ -n "$log" ] && ! printf '%s' "$reason" | grep -qE 'window closed|quit from the quick menu'; }; then
+  report="$pkg/Informes de error/error-$(date +%Y-%m-%d_%H-%M-%S).txt"
+  mkdir -p "$(dirname "$report")"
+  {
+    echo "$title $(sed -nE 's/.*(v[0-9]+\.[0-9]+\.[0-9]+)".*/\1/p' "$here/config.sh" | head -n1) (Linux)"
+    echo; echo "Game: $name ($elf)"; echo "Exit code: $code"; echo "Stopped: ${reason:-no end line in the log}"
+    echo "Settings: scale $(sed -nE 's/^[[:space:]]*scale[[:space:]]*=[[:space:]]*//p' "$ini" | tail -n1), full screen $full"
+    echo "PC: $(uname -sr); $(grep -m1 'model name' /proc/cpuinfo | cut -d: -f2 | sed 's/^ //') ($(nproc) threads); $(awk '/MemTotal/ { printf "%.1f", $2 / 1048576 }' /proc/meminfo) GB RAM"
+    echo "Graphics: $(command -v lspci > /dev/null && lspci | grep -iE 'vga|3d|display' | cut -d: -f3- | sed 's/^ //' | paste -sd ';' -)"
+    echo "Log: ${log:-none}"; echo; echo '--- last lines of the log ---'
+    [ -z "$log" ] || grep -vE '^\[(fileio|cdvdfsv|iop-io)\]' "$log" | tail -n 40
+  } > "$report" 2> /dev/null
+  msg="$(t "Sorry: the game closed because of an error. It is not your fault.
+A report of what happened was saved to:
+$report
+Please send it (attach the file) so it can be fixed:
+https://github.com/Miguel0827/Crash-Wrath-of-Cortex-PC/issues" "Lo sentimos: el juego se cerró por un error. No es culpa tuya.
+Se guardó un informe de lo que pasó en:
+$report
+Envíalo (adjunta el archivo) para poder arreglarlo:
+https://github.com/Miguel0827/Crash-Wrath-of-Cortex-PC/issues")"
+  printf '\n%s\n' "$msg" >&2
+  if [ "$gui" = 1 ]; then z --error --width=620 --no-markup --text="$msg"; fi
+fi
+exit "$code"
