@@ -9,7 +9,7 @@
 <a href="https://github.com/Miguel0827/Crash-Wrath-of-Cortex-PC/releases/latest"><img src="https://img.shields.io/github/v/release/Miguel0827/Crash-Wrath-of-Cortex-PC?style=for-the-badge&color=a855f7&label=release" alt="Latest release"></a>
 <img src="https://img.shields.io/badge/Windows-10%20%7C%2011-a855f7?style=for-the-badge&logo=windows&logoColor=white" alt="Windows 10 / 11">
 <img src="https://img.shields.io/badge/Linux-64--bit-a855f7?style=for-the-badge&logo=linux&logoColor=white" alt="Linux 64-bit">
-<img src="https://img.shields.io/github/license/Miguel0827/Crash-Wrath-of-Cortex-PC?style=for-the-badge&color=2e1065" alt="MIT licence">
+<img src="https://img.shields.io/badge/license-MIT-2e1065?style=for-the-badge" alt="MIT licence">
 
 <a href="https://recomplauncher.com/game/crash-wrath-of-cortex-pc"><picture><source media="(prefers-color-scheme: dark)" srcset="https://recomplauncher.com/assets/press/launcher/badge-light.svg"><img src="https://recomplauncher.com/assets/press/launcher/badge-dark.svg" alt="Get it on RecompLauncher" height="56"></picture></a>
 <a href="https://recompstore.com/dev/miguel0827"><picture><source media="(prefers-color-scheme: dark)" srcset="https://recompstore.com/assets/press/verified-light.svg"><img src="https://recompstore.com/assets/press/verified-dark.svg" alt="Verified developer on RecompStore" height="56"></picture></a>
