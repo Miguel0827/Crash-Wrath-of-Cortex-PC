@@ -52,7 +52,7 @@ while true; do
   fields+=(--add-combo="$(t 'Vertical sync' 'Sincronización vertical')" --combo-values="$(first_then "$(yes_no "$vsync")" "$(t Yes Sí)" No)")
   fields+=(--add-combo="$(t 'Full screen' 'Pantalla completa')" --combo-values="$(first_then "$(yes_no "$full")" "$(t Yes Sí)" No)")
 
-  out="$(z --forms --width=520 --separator='|' --text="CRASH BANDICOOT  ·  THE WRATH OF CORTEX  ·  PC  ·  By NyxBorn  ·  v1.3.0" \
+  out="$(z --forms --width=520 --separator='|' --text="CRASH BANDICOOT  ·  THE WRATH OF CORTEX  ·  PC  ·  By NyxBorn  ·  v1.3.1" \
          --ok-label="$(t 'PLAY' 'JUGAR')" --cancel-label="$(t 'Quit' 'Salir')" --extra-button="$import_label" "${fields[@]}")"
   rc=$?
   if [ "$out" = "$import_label" ]; then bash "$here/install.sh"; continue; fi
