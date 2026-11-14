@@ -1,0 +1,8 @@
+{
+  "$schema": "https://recomplauncher.com/schema/recomplauncher.json",
+  "format": 1,
+  "repo": "Miguel0827/Crash-Wrath-of-Cortex-PC",
+  "start": {
+    "program": ["Crash Wrath of Cortex PC - Config.exe"]
+  }
+}
