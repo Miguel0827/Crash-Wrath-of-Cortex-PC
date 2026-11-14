@@ -65,7 +65,7 @@ From a terminal: `./linux/install.sh your-game.iso`, then `./linux/play.sh` (opt
 
 ## What this project adds
 
-Fixes to ps2-native-recomp (`patches/twoc-fixes.patch`, made for commit `b1af7232b320`):
+Fixes to ps2-native-recomp (`patches/twoc-fixes.patch`, made for commit `5d1ebbcf133c`):
 
 - **Endless "LOADING" screen fixed**: the game's sound streamer (NUSOUND.IRX) seeks the disc and waits for the drive's callback before reading. The converter answered the seek but never called back; now a seek ends like a read and calls the CD callback.
 - **Normal game speed**: this game runs without the console's GIF transfer timing, which made its main loop take two frames instead of one (slow motion).
